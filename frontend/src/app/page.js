@@ -38,12 +38,12 @@ export default function Home() {
     return true;
   }
 
-  const handleCheckUser = (price) => {
-    console.log(price, 'haahah');
+  const handleCheckUser = (price, id) => {
+    console.log(id, 'haahah');
     const token = localStorage.getItem('Token');
     if (token && isValidToken(token)) {
       //  if user is logged in & token is valid, redirect to checkout page
-      router.push(`/checkout?price=${price}`);
+      router.push(`/checkout/?price=${price}&id=${id}`)
     } else {
       alert('Please log in to proceed');
     }
@@ -84,7 +84,7 @@ export default function Home() {
                 </div>
                 <div className="text-sm text-slate-600">{product.category}</div>
                   <div className="mt-2 mx-2 py-1 px-6 rounded-lg border-2 border-slate-200 hover:scale-105 hover:border-slate-400 cursor-pointer text-center "
-                  onClick={ () => handleCheckUser(product.price) }
+                  onClick={ () => handleCheckUser(product.price, product._id) }
                 > Buy Now</div>
               </div> 
            )

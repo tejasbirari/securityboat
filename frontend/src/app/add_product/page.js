@@ -1,16 +1,20 @@
 'use client'
 import axios from 'axios';
-import React, { useState } from 'react'
-
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { jwtDecode } from "jwt-decode";
 
 const page = () => {
+
+    let token = null;
+    const router = useRouter();
 
     const [title, setTitle] = useState('');
     const [category, setCategory] = useState('');
     const [price, setPrice] = useState('');
     const [selectedImage, setSelectedImage] = useState(null);
 
-    // Function used for converting image into base64 format
+    // function used for converting image into base64 format
     const handleImageUpload = (e, setImageFunction) => {
         try {
             const file = e.target.files[0];
@@ -25,7 +29,7 @@ const page = () => {
         }
     }
 
-    // Onclick "ADD PRODUCT" it will send data to backend to stored in database 
+    // function to handle adding a product
     const handleAddProduct = async() => {
         try {
             const response = await axios.post('http://localhost:5000/api/add_product', { title, category, price, image:selectedImage});
@@ -42,6 +46,39 @@ const page = () => {
             console.log('Error frontend', error);
         }
     }
+
+    if (typeof window !== 'undefined') {
+        // Accessing localStorage only in the browser 
+        token = localStorage.getItem('adminToken');
+    }
+
+    // function to check if token is valid or not
+    const isValidToken = (token) => {
+        const decodedToken = jwtDecode(token);
+        const currentTime = Date.now() / 1000;
+
+        if(decodedToken.exp < currentTime){
+        localStorage.removeItem('adminToken');
+        return false;
+        }
+        return true;
+    }
+
+    // function to check user and redirect accordingly
+    const handleCheckUser = () => {
+        if (token && isValidToken(token)) {
+        //  if user is logged in & token is valid, redirect to add product page
+        router.push('/add_product');
+        } else {
+        router.push('/admin');
+        alert('Please log in to proceed');
+        }
+    }
+
+    // check user and redirect accordingly
+    useEffect(() => {
+        handleCheckUser();
+    }, [])
 
 
   return (

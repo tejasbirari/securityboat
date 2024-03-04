@@ -8,24 +8,23 @@ import { jwtDecode } from "jwt-decode";
 const page = () => {
 
   const router = useRouter();
+  let token = null;
 
   // store reterived products data in array
   const [products, setProducts] = useState([]);
-
-  let token = null;
-
-  // logout admin
-  const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    router.push('/');
-  }
 
   if (typeof window !== 'undefined') {
     // Accessing localStorage only in the browser 
     token = localStorage.getItem('adminToken');
   }
 
-  // check if token is valid or not
+  // function to logout admin
+  const handleLogout = () => {
+    localStorage.removeItem('adminToken');
+    router.push('/');
+  }
+
+  // function to check if token is valid or not
   const isValidToken = (token) => {
     const decodedToken = jwtDecode(token);
     const currentTime = Date.now() / 1000;
@@ -37,18 +36,24 @@ const page = () => {
     return true;
   }
 
+  // function to check user and redirect accordingly
   const handleCheckUser = () => {
     if (token && isValidToken(token)) {
       //  if user is logged in & token is valid, redirect to add product page
       router.push('/add_product');
     } else {
-      alert('Please log in to proceed');
       router.push('/admin');
+      alert('Please log in to proceed');
     }
   }
 
   // this will fetch products every time page gets refresh
   useEffect(() => {
+
+    // check user and redirect accordingly
+    handleCheckUser();
+
+    // fetch products
     const fetchProducts = async() => {
       try {
         const response = await axios.get('http://localhost:5000/api/get_product');
@@ -58,19 +63,16 @@ const page = () => {
       }
     }
     fetchProducts();
-    if(token){
-      isValidToken(token);
-    } 
   }, []);
 
 
-  // Product Delete
+  // product delete
   const handleDeleteProduct = async(productId) => {
     try {
       const response = await axios.post(`http://localhost:5000/api/delete_product/${productId}`);
       if(response.status === 200){
         alert("Product Deleted")
-        // Update the products state by removing the deleted product
+        // update the products state by removing the deleted product
         setProducts(products.filter(product => product._id !== productId));
       } else {
         alert("Please try again")

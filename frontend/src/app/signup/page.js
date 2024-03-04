@@ -20,11 +20,19 @@ const page = () => {
       return;
     }
 
-    // Regular expression to match 10 digits only
+    // regular expression to match 10 digits only
     const mobileRegex = /^\d{10}$/;
 
     if (!mobileRegex.test(mobile)) {
       alert('Incorrect Mobile No.');
+      return;
+    }
+
+    // regular expression for password 
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+
+    if (!passwordRegex.test(password)) {
+      alert('Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.');
       return;
     }
 

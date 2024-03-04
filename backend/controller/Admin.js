@@ -21,7 +21,7 @@ const admin = async(req, res) => {
 
         // If all credentials are valid then assign token to admin 
         const token = jwt.sign( {username: existingAdmin.username}, process.env.ACCESS_TOKEN_SECRET_KEY, {
-            expiresIn: '3m',
+            expiresIn: '3h',
         } )
         
         return res.status(200).json({ user: username, token: token })
