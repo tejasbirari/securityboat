@@ -1,3 +1,16 @@
+# Project workflow
+## 1) User-Level 
+### 1. A user can browse all products without any login
+### 2. To buy a certain product user must log on 
+### 3. Sign Up is for those, who are new to application
+### 4. At checkout page, by default product quantity is set to 1
+### 5. When user confirms order, then admin places that order from his side 
+
+## 2) Admin-Level (accessed by only owners and admins)
+### 1. Admin can perform mainly 3 tasks -> 1. Add new product, 2. Delete Product, 3. Place Order
+### 2. When admin place's order (In future-scope: we can notify user that his order is placed by email/sms on registered mail/mobile no)
+### 3. Admin can not go directly to dashboard page or add_product page without login
+
 # Instructions:
 
 ### Admin credentials:
