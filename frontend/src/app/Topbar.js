@@ -15,6 +15,7 @@ const Topbar = () => {
     const handleLogOut = () => {
         if (typeof window !== 'undefined') {
             localStorage.removeItem('Token');
+            localStorage.removeItem('user');
             window.location.reload();
         }
     }

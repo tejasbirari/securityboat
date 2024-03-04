@@ -28,6 +28,7 @@ const page = () => {
 
     try {
       const response = await axios.post('http://localhost:5000/api/login/user', { mobile, password });
+      localStorage.setItem('user', response.data.user)
       if (response.status === 200) {
         // on successful login, redirect user to homepage and save token in localStorage
         const token = response.data.token;

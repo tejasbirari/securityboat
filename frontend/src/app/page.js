@@ -26,6 +26,20 @@ export default function Home() {
     fetchProducts();
   }, []);
 
+   // Filter products based on selected category
+   useEffect(() => {
+    if (selectedCategory) {
+      const filtered = products.filter(product => product.category === selectedCategory);
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts(products);
+    }
+  }, [selectedCategory, products]);
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+  };
+
   // check if token is valid or not
   const isValidToken = (token) => {
     const decodedToken = jwtDecode(token);
@@ -38,8 +52,7 @@ export default function Home() {
     return true;
   }
 
-  const handleCheckUser = (price, id) => {
-    console.log(id, 'haahah');
+  const handleBuyNow = (price, id) => {
     const token = localStorage.getItem('Token');
     if (token && isValidToken(token)) {
       //  if user is logged in & token is valid, redirect to checkout page
@@ -49,19 +62,7 @@ export default function Home() {
     }
   }
 
-  // Filter products based on selected category
-  useEffect(() => {
-    if (selectedCategory) {
-      const filtered = products.filter(product => product.category === selectedCategory);
-      setFilteredProducts(filtered);
-    } else {
-      setFilteredProducts(products);
-    }
-  }, [selectedCategory, products]);
-
-  const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
-  };
+ 
 
   return (
     <main id="homepage">
@@ -84,7 +85,7 @@ export default function Home() {
                 </div>
                 <div className="text-sm text-slate-600">{product.category}</div>
                   <div className="mt-2 mx-2 py-1 px-6 rounded-lg border-2 border-slate-200 hover:scale-105 hover:border-slate-400 cursor-pointer text-center "
-                  onClick={ () => handleCheckUser(product.price, product._id) }
+                  onClick={ () => handleBuyNow(product.price, product._id) }
                 > Buy Now</div>
               </div> 
            )

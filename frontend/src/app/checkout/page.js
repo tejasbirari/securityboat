@@ -2,52 +2,20 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation'
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import requireUserAuth from '../requiredUserAuth';
 
 const page = () => {
 
-  let token = null;
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const [total, setTotal] = useState(0)
   const [address, setAddress] = useState('');
   const [mobile, setMobile] = useState('');
+  const [paymentMode, setPaymentMode] = useState('');
   const id = searchParams.get('id');
 
-  if (typeof window !== 'undefined') {
-    // Accessing localStorage only in the browser 
-    token = localStorage.getItem('Token');
-  }
-
-  // function to check if token is valid or not
-  const isValidToken = (token) => {
-    const decodedToken = jwtDecode(token);
-    const currentTime = Date.now() / 1000;
-
-    if(decodedToken.exp < currentTime){
-      localStorage.removeItem('Token');
-      return false;
-    }
-    return true;
-  }
-
-  // function to check user and redirect accordingly
-  const handleCheckUser = () => {
-      if (token && isValidToken(token)) {
-      //  if user is logged in & token is valid, redirect to add product page
-      router.push('/add_product');
-      } else {
-      router.push('/login');
-      alert('Please log in to proceed');
-      }
-  }
-  
   useEffect(() => {
-
-    // check user and redirect accordingly
-    handleCheckUser();
-
     // Get the price from the query parameter
     const price = searchParams.get('price')
     setTotal(price);
@@ -73,10 +41,16 @@ const page = () => {
 
     // if all fields are valid, proceed to confirm order 
     try {
-      const response = await axios.post('', {id});
+      const userId = localStorage.getItem('user');
+      const response = await axios.post('http://localhost:5000/api/confirm_order', { productId:id, userId, address, mobile, paymentMode, price:total});
+      console.log(response);
       // if response status 200, it will return and redirect  
-      alert("Order Confirmed");
-      router.push('/');
+      if(response.status === 200){
+        alert("Order Confirmed");
+        router.push('/');
+      }else{
+        alert("Server Error. Order not confirmed")
+      }
     } catch (error) {
       console.log('Error frontend', error);
     }
@@ -104,6 +78,14 @@ const page = () => {
               type="text" placeholder='Mobile No' value={mobile} onChange={ (e) => setMobile(e.target.value) } />
           </div>
 
+          <div className='flex items-center mx-4'> 
+            <label htmlFor='code' className='font-semibold'>Cash on Delivery</label>
+            <input className='ml-4'
+              type="radio" id="cod" value="cod" onChange={ (e) => setPaymentMode(e.target.value) } required/>
+          </div>
+
+          <div className='text-sm text-slate-500 ml-4 mb-6'>Soon we are having other payment methods.</div>
+
           <div className='flex items-center justify-between mx-6 max-md:mx-8 mb-4 font-bold'>
             <label>Total:</label>
             {total ? total : 'Loading...'}
@@ -121,4 +103,4 @@ const page = () => {
   )
 }
 
-export default page
+export default requireUserAuth(page)

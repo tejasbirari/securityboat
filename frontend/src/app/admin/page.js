@@ -9,7 +9,7 @@ const page = () => {
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleLogin = async() => {
+  const handleAdminLogin = async() => {
     // validate fields before sending to backend
     // check if inputs are empty 
     if(!username || !password){
@@ -52,7 +52,7 @@ const page = () => {
         </div>
 
         <div className='mt-12 border-2 border-white py-2 px-6 rounded-lg font-semibold hover:scale-110 cursor-pointer'
-          onClick={handleLogin}
+          onClick={handleAdminLogin}
         >
           LOG IN
         </div>
