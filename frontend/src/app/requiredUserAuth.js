@@ -12,7 +12,9 @@ const requireUserAuth = (Component) => {
 
     if (!token || !isValidToken(token)) {
       // If token is not present or not valid, redirect to admin login page
-      router.push('/login');
+      if (typeof window !== 'undefined') {
+        router.push('/login');
+      }
       return null; // it will not render the component
     }
 
