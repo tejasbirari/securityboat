@@ -3,7 +3,7 @@ const Order = require('../database/models/Orders');
 const confirmOrder = async(req, res) => {
     try {
         const { productId, userId, address, mobile, paymentMode, price } = req.body;
-
+        
         const newOrder = new Order({
             productId: productId,
             userId: userId,

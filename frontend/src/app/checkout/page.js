@@ -41,8 +41,13 @@ const page = () => {
 
     // if all fields are valid, proceed to confirm order 
     try {
+      const token = localStorage.getItem('Token');
       const userId = localStorage.getItem('user');
-      const response = await axios.post('http://localhost:5000/api/confirm_order', { productId:id, userId, address, mobile, paymentMode, price:total});
+      const response = await axios.post('http://localhost:5000/api/confirm_order', { productId:id, userId, address, mobile, paymentMode, price:total},
+       { headers: {
+          Authorization: `Bearer ${token}`
+        }}
+      );
       console.log(response);
       // if response status 200, it will return and redirect  
       if(response.status === 200){

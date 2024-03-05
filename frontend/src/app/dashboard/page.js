@@ -36,7 +36,12 @@ const page = () => {
     // fetch orders
     const fetchOrders = async() => {
       try {
-        const response = await axios.get('http://localhost:5000/api/order_info');
+        const token = localStorage.getItem('adminToken');
+        console.log(token);
+        const response = await axios.get('http://localhost:5000/api/order_info', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }});
         setOrders(response.data.orders);
       } catch (error) {
         console.log("Internal Server Error", error);
